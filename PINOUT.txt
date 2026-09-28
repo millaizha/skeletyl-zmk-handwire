@@ -1,0 +1,35 @@
+SKELETYL HANDWIRE PINOUT
+
+BOTH HALVES — local 4x5 matrix, wired identically.
+
+ORANGE / ROWS  (sampled inputs, pull-down)
+R0 -> P0.17 (017)  = nice!nano D2
+R1 -> P0.20 (020)  = nice!nano D3
+R2 -> P0.22 (022)  = nice!nano D4
+R3 -> P0.24 (024)  = nice!nano D5   (thumb row)
+
+BLACK / COLUMNS  (driven outputs)
+C0 -> P0.08 (008)  = nice!nano D0 / RX
+C1 -> P1.00 (100)  = nice!nano D6
+C2 -> P0.11 (011)  = nice!nano D7
+C3 -> P1.04 (104)  = nice!nano D8
+C4 -> P1.06 (106)  = nice!nano D9
+
+All nine are plain GPIO on the nice!nano and are unclaimed by this firmware.
+
+DIODE DIRECTION
+COLUMN -> SWITCH -> DIODE -> ROW
+Black diode band/cathode -> ROW
+ZMK: diode-direction = "col2row"
+
+THUMBS (row 3 only)
+Left  thumbs on C2, C3, C4   -> logical columns 2, 3, 4
+Right thumbs on C0, C1, C2   -> logical columns 5, 6, 7  (col-offset = 5)
+
+POWER
+Battery + -> B+
+Battery - -> latching switch -> B-
+
+SPLIT ROLES
+Left  = central    (pairs to the Mac, advertises "Mill Skeletyl")
+Right = peripheral (connects to the left half only)

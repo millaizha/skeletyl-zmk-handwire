@@ -1,0 +1,18 @@
+file_format: "1"
+id: skeletyl_handwire
+name: Skeletyl 36 Handwire
+type: shield
+url: https://github.com/Bastardkb/Skeletyl
+description: >-
+  Handwired 36-key Skeletyl (3x5 + 3 thumbs per half) driven by two
+  nice!nano-compatible nRF52840 controllers over a BLE split with no TRRS.
+  The controller sits in a Pro Micro footprint, but the matrix is declared
+  against nRF52840 GPIO ports (&gpio0 / &gpio1) rather than the pro_micro
+  interconnect, so this shield is specific to nRF52840 boards.
+requires: [pro_micro]
+features:
+  - keys
+  - studio
+siblings:
+  - skeletyl_handwire_left
+  - skeletyl_handwire_right

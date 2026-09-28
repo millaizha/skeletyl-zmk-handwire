@@ -1,0 +1,25 @@
+# GitHub Actions build matrix.
+#
+# `nice_nano//zmk` is the current ZMK board target for the nice!nano
+# (Zephyr hardware-model-v2 board `nice_nano`, ZMK variant `zmk`).
+# ZMK's build workflow hard-errors if you build a plain `nice_nano` while a
+# `zmk` variant exists, so this is the correct spelling for ZMK `main`.
+#
+# `artifact-name` is what pins the output file names. Without it the outputs
+# would come out as e.g. `skeletyl_handwire_left-nice_nano__zmk-zmk.uf2`.
+---
+include:
+  - board: nice_nano//zmk
+    shield: skeletyl_handwire_left
+    artifact-name: skeletyl_handwire_left
+
+  - board: nice_nano//zmk
+    shield: skeletyl_handwire_right
+    artifact-name: skeletyl_handwire_right
+
+  # Wipes stored settings (BLE bonds, split pairing, saved profiles).
+  # Flash this first on each half when bringing the keyboard up or when
+  # pairing between the halves is broken.
+  - board: nice_nano//zmk
+    shield: settings_reset
+    artifact-name: settings_reset

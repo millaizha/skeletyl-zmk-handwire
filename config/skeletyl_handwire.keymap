@@ -1,0 +1,97 @@
+/*
+ * Skeletyl 36 (handwired, BLE split) — keymap
+ *
+ * Layers
+ *   0  BASE    Colemak-DH
+ *   1  LOWER   momentary, held with either thumb
+ *   2  SYSTEM  momentary, held from LOWER with the left outer thumb
+ *
+ * Key positions in every `bindings` block are ordered exactly like the
+ * matrix transform in boards/shields/skeletyl_handwire/skeletyl_handwire.dtsi:
+ * three rows of 5+5, then 3+3 thumbs.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        /* ------------------------------------------------------------------
+         * BASE — Colemak-DH
+         *
+         *   Q   W   F   P   B   |   J   L   U   Y   ;
+         *   A   R   S   T   G   |   M   N   E   I   O
+         *   Z   X   C   D   V   |   K   H   ,   .   /
+         *            ESC LWR SPC | RET LWR BSPC
+         * ------------------------------------------------------------------ */
+        base_layer {
+            display-name = "Colemak-DH";
+            bindings = <
+                &kp Q      &kp W      &kp F      &kp P      &kp B        &kp J      &kp L      &kp U      &kp Y      &kp SEMI
+                &kp A      &kp R      &kp S      &kp T      &kp G        &kp M      &kp N      &kp E      &kp I      &kp O
+                &kp Z      &kp X      &kp C      &kp D      &kp V        &kp K      &kp H      &kp COMMA  &kp DOT    &kp FSLH
+                                      &kp ESC    &mo 1      &kp SPACE    &kp RET    &mo 1      &kp BSPC
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * LOWER — numbers, function keys, navigation, BT profile switching
+         *
+         *   1   2   3   4   5   |   6    7     8     9     0
+         *   F1  F2  F3  F4  F5  |  LFT  DWN    UP   RGT   DEL
+         *  BT0 BT1 BT2 BT3 BT4  | HOME PGDN  PGUP   END   TAB
+         *            SYS  --  SPC | RET  --  BSPC
+         *
+         * `BT0`..`BT4` select Bluetooth profile 0-4. These are safe: they
+         * only switch which host profile is active, they never erase a bond.
+         *
+         * The left outer thumb becomes SYSTEM — hold it together with LOWER
+         * to reach the destructive/recovery keys.
+         * ------------------------------------------------------------------ */
+        lower_layer {
+            display-name = "Lower";
+            bindings = <
+                &kp N1        &kp N2        &kp N3        &kp N4        &kp N5        &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
+                &kp F1        &kp F2        &kp F3        &kp F4        &kp F5        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp DEL
+                &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &kp TAB
+                                            &mo 2         &trans        &trans        &trans     &trans     &trans
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * SYSTEM — recovery. Reached with LOWER + left outer thumb.
+         *
+         *  BTCLR BTCLRA  --   --   --  |  --   --    --    --    --
+         *  OUTTOG OUTUSB OUTBLE -- --  |  --   F6    F7    F8    F9
+         *  BOOT-L RESET-L  --  --  --  |  --   F10   F11  RESET-R BOOT-R
+         *              --   --   --    |  --   --    --
+         *
+         * BTCLR    clears the bond for the CURRENTLY SELECTED profile.
+         * BTCLRA   clears the bonds for ALL profiles.
+         * Both are destructive and deliberately need three keys held at
+         * once (LOWER + left outer thumb + the key), so they cannot be hit
+         * by accident while typing.
+         *
+         * BOOT-L / RESET-L are physically on the LEFT half and act on the
+         * LEFT controller. BOOT-R / RESET-R are on the RIGHT half and act
+         * on the RIGHT controller. That means you can re-enter the UF2
+         * bootloader on either half from the keyboard itself, without
+         * shorting RST to GND again.
+         * ------------------------------------------------------------------ */
+        system_layer {
+            display-name = "System";
+            bindings = <
+                &bt BT_CLR     &bt BT_CLR_ALL  &none          &none   &none    &none   &none      &none      &none        &none
+                &out OUT_TOG   &out OUT_USB    &out OUT_BLE   &none   &none    &none   &kp F6     &kp F7     &kp F8       &kp F9
+                &bootloader    &sys_reset      &none          &none   &none    &none   &kp F10    &kp F11    &sys_reset   &bootloader
+                                               &trans         &none   &none    &none   &none      &none
+            >;
+        };
+    };
+};

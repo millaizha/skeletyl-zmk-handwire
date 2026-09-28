@@ -1,0 +1,19 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      # Tracking `main` is required for the `nice_nano//zmk` board target.
+      # That target comes from ZMK's Zephyr 4.1 / hardware-model-v2 migration,
+      # which landed after the newest tagged release (v0.3.0, 2025-08-01).
+      #
+      # To pin to a release instead, set `revision: v0.3` here AND change every
+      # `board:` in build.yaml to `nice_nano_v2`, and pin the workflow in
+      # .github/workflows/build.yml to `@v0.3`. v0.3 predates the board variant
+      # and only understands the old flat board names.
+      revision: main
+      import: app/west.yml
+  self:
+    path: config

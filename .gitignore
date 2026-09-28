@@ -1,0 +1,16 @@
+# West / Zephyr workspace artifacts, if you ever build inside this checkout
+.west/
+build/
+zephyr/.cache/
+modules/
+tools/
+bootloader/
+zmk/
+
+# Build outputs
+*.uf2
+*.bin
+*.hex
+
+# macOS
+.DS_Store

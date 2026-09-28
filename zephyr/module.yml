@@ -1,0 +1,4 @@
+name: zmk-keyboard-skeletyl-handwire
+build:
+  settings:
+    board_root: .
