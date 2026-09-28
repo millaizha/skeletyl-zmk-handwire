@@ -77,23 +77,38 @@ the right half sets `col-offset = <5>` in `skeletyl_handwire_right.overlay` and
 takes global columns 5–9. Both halves flash the same transform and each applies
 its own offset, which is how every ZMK BLE split works.
 
-Physical columns are numbered left-to-right **on each half**, so:
+The halves are **mirrored as built** — column order runs the opposite way on
+the right half. This was confirmed on hardware: pressing the right half's top
+row from the center gap outward originally produced `; y u l j`.
 
-- Left: C0 = far-left (pinky) … C4 = far-right (index reach)
-- Right: C0 = far-left (index reach) … C4 = far-right (pinky)
+- Left: C0 = far-**left** (pinky) … C4 = far-right (index reach)
+- Right: C0 = far-**right** (pinky) … C4 = far-left (index reach)
 
-Thumbs occupy only the three innermost columns of each half:
+Rows are *not* mirrored — row 0 is the top row on both halves.
 
-- Left thumbs = C2, C3, C4 → global columns 2, 3, 4
-- Right thumbs = C0, C1, C2 → global columns 5, 6, 7
+Thumbs occupy the three innermost columns of each half. Because of the
+mirroring, the right thumbs count outward:
+
+- Left thumbs = C2, C3, C4 → global columns 2, 3, 4 (outer → inner)
+- Right thumbs = C2, C1, C0 → global columns 7, 6, 5 (inner → outer)
+
+So the right half's entries are listed in **descending** column order, which is
+what makes position 5 (keymap `J`) land nearest the center gap:
 
 ```
-RC(0,0..9)      10 keys   top row
-RC(1,0..9)      10 keys   home row
-RC(2,0..9)      10 keys   bottom row
-RC(3,2..7)       6 keys   thumbs (3 left + 3 right)
-                --------
-                36 keys   = 18 per half
+RC(0,0..4) then RC(0,9..5)      10 keys   top row
+RC(1,0..4) then RC(1,9..5)      10 keys   home row
+RC(2,0..4) then RC(2,9..5)      10 keys   bottom row
+RC(3,2..4) then RC(3,7..5)       6 keys   thumbs (3 left + 3 right)
+                                --------
+                                36 keys   = 18 per half
+```
+
+Verified from the compiled devicetree — physical left-to-right on each half:
+
+```
+LEFT    Q W F P B / A R S T G / Z X C D V / ESC LOWER SPACE
+RIGHT   J L U Y ; / M N E I O / K H , . / / RET LOWER BSPC
 ```
 
 `RC(3,0)`, `RC(3,1)`, `RC(3,8)` and `RC(3,9)` are deliberately absent — no
@@ -272,7 +287,7 @@ press every key exactly once.
 | One key dead | That key's switch, diode or a solder joint | Reflow both switch pins. Check the diode is not cracked and that the black band faces the **row**. Check continuity column → switch → diode → row. |
 | A whole row dead (5 keys, or 3 on the thumb row) | That row's GPIO wire | Reflow the orange wire at the controller pad and at the first switch in the chain. R0=P0.17/D2, R1=P0.20/D3, R2=P0.22/D4, R3=P0.24/D5. |
 | A whole column dead (3 keys, 4 with a thumb) | That column's GPIO wire | Reflow the black wire at the controller pad. C0=P0.08/D0, C1=P1.00/D6, C2=P0.11/D7, C3=P1.04/D8, C4=P1.06/D9. |
-| Keys work but produce the **wrong** letters | Logical transform, not wiring | The matrix is fine. Note which physical key produced which letter and adjust only `default_transform` in `skeletyl_handwire.dtsi`. Do not rewire. |
+| Keys work but produce the **wrong** letters | Logical transform, not wiring | The matrix is fine. Note which physical key produced which letter and adjust only `default_transform` in `skeletyl_handwire.dtsi`. Do not rewire. This already happened once — the right half read mirrored, and was fixed by reversing its column order in the transform. |
 | A key fires twice per press | Debounce or a cold joint | Reflow the joint first. If it persists, raise `debounce-press-ms` / `debounce-release-ms` on `kscan0`. |
 | Two keys fire together | Missing or backwards diode | A backwards diode ghosts into its neighbours. Check the band direction. |
 | Left works, right does nothing | Split pairing, right-half config, or right-half power | Confirm the right half has power (its own battery/switch, and check the LED). Confirm you flashed `skeletyl_handwire_right.uf2` to the right half and not the left build. Then reset settings on both halves (below). |

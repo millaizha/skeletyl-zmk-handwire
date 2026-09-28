@@ -22,9 +22,15 @@ COLUMN -> SWITCH -> DIODE -> ROW
 Black diode band/cathode -> ROW
 ZMK: diode-direction = "col2row"
 
+COLUMN DIRECTION — the halves are MIRRORED as built
+Left  C0 = far-LEFT  (pinky)  ... C4 = far-right (index reach)
+Right C0 = far-RIGHT (pinky)  ... C4 = far-left  (index reach)
+Rows are NOT mirrored: row 0 is the top row on both halves.
+
 THUMBS (row 3 only)
-Left  thumbs on C2, C3, C4   -> logical columns 2, 3, 4
-Right thumbs on C0, C1, C2   -> logical columns 5, 6, 7  (col-offset = 5)
+Left  thumbs on C2, C3, C4   -> logical columns 2, 3, 4  (outer to inner)
+Right thumbs on C2, C1, C0   -> logical columns 7, 6, 5  (inner to outer)
+Right half applies col-offset = 5.
 
 POWER
 Battery + -> B+
