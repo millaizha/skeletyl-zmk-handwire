@@ -7,11 +7,14 @@ central and is the half your Mac pairs with. Bluetooth name: **Mill Skeletyl**.
 Firmware is built and verified against **ZMK `main`** with **Zephyr 4.1.0**.
 
 ```
-Q W F P B   J L U Y ;
+Q W F P B   J L U Y '
 A R S T G   M N E I O
 Z X C D V   K H , . /
-    ESC LWR SPC   RET LWR BSPC
+  ESC BSPC TAB   RET SPACE DEL
 ```
+
+Thumbs are layer-taps (tap the key, hold for the layer). Home-row mods and the
+Cmd+C/X/V/Z double taps are documented in `config/skeletyl_handwire.keymap`.
 
 ---
 
@@ -118,55 +121,34 @@ switch is wired at those intersections.
 
 ## Keymap
 
-### Layer 0 — BASE (Colemak-DH)
+Cantor Remix layers 0–5. Game layers are not in this firmware. The full binding
+list, including timings, is `config/skeletyl_handwire.keymap`.
+
+| Thumb | Tap | Hold |
+|---|---|---|
+| Left outer | Esc | Layer 1, media |
+| Left middle | Backspace | Layer 2, numbers |
+| Left inner | Tab | Layer 3, function / Bluetooth |
+| Right inner | Enter | — |
+| Right middle | Space | Layer 4, symbols |
+| Right outer | Delete | Layer 5, mouse |
+
+Home row: A/R/S/T are Gui, Alt, Ctrl, Shift. N/E/I/O are Shift, Ctrl, Alt, Gui.
+Double-tap Q, Z, X, or V for Cmd+C, Cmd+Z, Cmd+X, Cmd+V.
+
+Layer 3, held with Tab:
 
 ```
-Q   W   F   P   B   |   J   L   U   Y   ;
-A   R   S   T   G   |   M   N   E   I   O
-Z   X   C   D   V   |   K   H   ,   .   /
-        ESC LWR SPC | RET LWR BSPC
+F1  F2  F3  F4  F5   | F6  F7  F8  F9  F10
+         ... F11     | F12 ...
+BT0 BT1 BT2 BT3 BOOT | INS HOME PGDN PGUP END
+      .  CAPS  ___   | BOOT BT4  BTCLR
 ```
 
-### Layer 1 — LOWER (hold either thumb LWR)
-
-```
-1    2    3    4    5   |  6     7     8     9    0
-F1   F2   F3   F4   F5  | LEFT  DOWN   UP  RIGHT  DEL
-BT0  BT1  BT2  BT3  BT4 | HOME  PGDN  PGUP  END   TAB
-          SYS  --  SPC  | RET   --   BSPC
-```
-
-`BT0`–`BT4` select Bluetooth profile 0–4. These are safe — they only switch
-which host profile is active and never erase a bond. Use them to hop between
-paired machines.
-
-The left outer thumb becomes **SYS** on this layer.
-
-### Layer 2 — SYSTEM (hold LOWER + left outer thumb)
-
-```
-BTCLR  BTCLRA   --      --  --  |  --   --   --      --      --
-OUTTOG OUTUSB   OUTBLE  --  --  |  --   F6   F7      F8      F9
-BOOT-L RESET-L  --      --  --  |  --   F10  F11  RESET-R  BOOT-R
-                --      --  --  |  --   --   --
-```
-
-| Key | Effect |
-|---|---|
-| `BTCLR` | Clear the bond for the **currently selected** profile |
-| `BTCLRA` | Clear the bonds for **all** profiles |
-| `OUTTOG` / `OUTUSB` / `OUTBLE` | Switch host output between USB and BLE |
-| `BOOT-L` / `BOOT-R` | Reboot that half into the UF2 bootloader |
-| `RESET-L` / `RESET-R` | Soft reset that half |
-
-The two Bluetooth-clear keys are destructive, so they deliberately need three
-keys held at once (LOWER + left outer thumb + the key). They cannot be hit by
-accident while typing, and nothing destructive lives on the base layer.
-
-`BOOT-L`/`RESET-L` are physically on the left half and act on the left
-controller; `BOOT-R`/`RESET-R` are on the right half and act on the right
-controller. After the first flash this means you can re-enter the bootloader on
-either half from the keyboard itself, without shorting RST to GND again.
+`BT0`–`BT4` select a Bluetooth profile. `BTCLR` clears only the selected
+profile and sits on the outer right thumb, so it needs Tab held as well.
+`BOOT` on the left half reboots the left controller; `BOOT` on the right thumb
+reboots the right one. Neither is on the base layer.
 
 ---
 

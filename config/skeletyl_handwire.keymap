@@ -1,14 +1,16 @@
 /*
- * Skeletyl 36 (handwired, BLE split) — keymap
+ * Skeletyl 36 — Cantor Remix, layers 0–5 only.
  *
- * Layers
- *   0  BASE    Colemak-DH
- *   1  LOWER   momentary, held with either thumb
- *   2  SYSTEM  momentary, held from LOWER with the left outer thumb
+ * Game layers 6–9 and every game tap-dance are intentionally absent.
+ * The matrix, GPIOs, diode direction, split roles, and thumb transform
+ * are not defined here. This file is bindings only.
  *
- * Key positions in every `bindings` block are ordered exactly like the
- * matrix transform in boards/shields/skeletyl_handwire/skeletyl_handwire.dtsi:
- * three rows of 5+5, then 3+3 thumbs.
+ * Positions, matching boards/shields/skeletyl_handwire/skeletyl_handwire.dtsi:
+ *
+ *   0  1  2  3  4     5  6  7  8  9
+ *  10 11 12 13 14    15 16 17 18 19
+ *  20 21 22 23 24    25 26 27 28 29
+ *        30 31 32    33 34 35
  *
  * SPDX-License-Identifier: MIT
  */
@@ -16,89 +18,272 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
-#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
 
 / {
+    behaviors {
+        /*
+         * Home-row mods, one behavior per hand.
+         *
+         * Not the stock &mt. Stock mod-tap is flavor "hold-preferred", which
+         * turns same-hand rolls into modifiers. These follow ZMK's positional
+         * home-row-mod setup:
+         *
+         *   flavor "balanced"
+         *     A hold wins when the other key is pressed and released while
+         *     this one is still down. A quick roll that releases this key
+         *     first stays a letter.
+         *   hold-trigger-key-positions
+         *     Only the opposite hand (including its thumbs) can force a hold.
+         *     Same-hand keys are absent from the list, so a same-hand roll
+         *     resolves to letters.
+         *   hold-trigger-on-release
+         *     The modifier is decided when that opposite key is released,
+         *     which is the pairing ZMK documents for this setup.
+         *   require-prior-idle-ms
+         *     While typing faster than this, the key is a letter immediately,
+         *     so a roll cannot become a modifier.
+         *   quick-tap-ms
+         *     Tap then quickly hold repeats the letter (shift-select, etc.).
+         *
+         * tapping-term-ms is 200, inside the requested 180–220 window.
+         * ZMK's own example of this same setup uses 280. Raise this toward
+         * 280 if a deliberate same-hand modifier is hard to catch; opposite-
+         * hand chords do not depend on the term because of the trigger list.
+         *
+         * Left hand uses the left modifiers. Right hand uses the right
+         * modifiers (RSHFT/RCTRL/RALT/RGUI). macOS treats both sides as
+         * Shift, Control, Option, and Command.
+         */
+        hml: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            hold-trigger-on-release;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <
+                 5  6  7  8  9
+                15 16 17 18 19
+                25 26 27 28 29
+                       33 34 35
+            >;
+        };
+
+        hmr: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            hold-trigger-on-release;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <
+                 0  1  2  3  4
+                10 11 12 13 14
+                20 21 22 23 24
+                       30 31 32
+            >;
+        };
+
+        /*
+         * Thumb layer-taps. Separate from the home-row mods on purpose:
+         * a layer must activate for same-hand keys too (hold BSPC, tap Q),
+         * so there is no opposite-hand trigger list and no prior-idle cutoff.
+         *
+         * flavor "balanced" rather than the stock &lt flavor "tap-preferred".
+         * Tap-preferred waits out the whole tapping term before the layer
+         * exists, which makes layer taps feel late. Balanced activates the
+         * layer as soon as another key is pressed and released under the thumb.
+         *
+         * retro-tap: if the thumb was held but nothing else was pressed, the
+         * tap key still fires on release (a slow ESC is still ESC).
+         * quick-tap-ms: tap then hold repeats ESC / BSPC / TAB / SPACE / DEL.
+         */
+        thumb: thumb_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            retro-tap;
+            bindings = <&mo>, <&kp>;
+        };
+
+        /* Double tap = Cmd+C / Cmd+X / Cmd+V / Cmd+Z. Single tap = the letter.
+         * This is ZMK's tap-dance, the direct stand-in for QMK
+         * ACTION_TAP_DANCE_DOUBLE. The second tap has to land within
+         * tapping-term-ms; slower than that, you get the letter twice.
+         * macOS Command, not Control. */
+        td_q: tap_dance_q {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp Q>, <&kp LG(C)>;
+        };
+
+        td_x: tap_dance_x {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp X>, <&kp LG(X)>;
+        };
+
+        td_v: tap_dance_v {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp V>, <&kp LG(V)>;
+        };
+
+        td_z: tap_dance_z {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp Z>, <&kp LG(Z)>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         /* ------------------------------------------------------------------
-         * BASE — Colemak-DH
+         * 0  BASE — Colemak-DH
          *
-         *   Q   W   F   P   B   |   J   L   U   Y   ;
-         *   A   R   S   T   G   |   M   N   E   I   O
-         *   Z   X   C   D   V   |   K   H   ,   .   /
-         *            ESC LWR SPC | RET LWR BSPC
+         *  Q*  W  F  P  B   |  J  L  U  Y  '
+         *  A†  R† S† T† G   |  M  N‡ E‡ I‡ O‡
+         *  Z*  X* C  D  V*  |  K  H  ,  .  /
+         *      ESC/1 BSPC/2 TAB/3 | RET SPC/4 DEL/5
+         *
+         *  * double tap = Cmd+letter (C, Z, X, V)
+         *  † left mods:   GUI  ALT  CTRL SHIFT
+         *  ‡ right mods:  SHIFT CTRL ALT  GUI
          * ------------------------------------------------------------------ */
         base_layer {
             display-name = "Colemak-DH";
             bindings = <
-                &kp Q      &kp W      &kp F      &kp P      &kp B        &kp J      &kp L      &kp U      &kp Y      &kp SEMI
-                &kp A      &kp R      &kp S      &kp T      &kp G        &kp M      &kp N      &kp E      &kp I      &kp O
-                &kp Z      &kp X      &kp C      &kp D      &kp V        &kp K      &kp H      &kp COMMA  &kp DOT    &kp FSLH
-                                      &kp ESC    &mo 1      &kp SPACE    &kp RET    &mo 1      &kp BSPC
+                &td_q       &kp W        &kp F        &kp P         &kp B          &kp J        &kp L         &kp U        &kp Y        &kp SQT
+                &hml LGUI A &hml LALT R  &hml LCTRL S &hml LSHFT T  &kp G          &kp M        &hmr RSHFT N  &hmr RCTRL E &hmr RALT I  &hmr RGUI O
+                &td_z       &td_x        &kp C        &kp D         &td_v          &kp K        &kp H         &kp COMMA    &kp DOT      &kp FSLH
+                                         &thumb 1 ESC &thumb 2 BSPC &thumb 3 TAB   &kp RET      &thumb 4 SPACE &thumb 5 DEL
             >;
         };
 
         /* ------------------------------------------------------------------
-         * LOWER — numbers, function keys, navigation, BT profile switching
+         * 1  MEDIA / BRIGHTNESS. Held by the outer left thumb (ESC).
          *
-         *   1   2   3   4   5   |   6    7     8     9     0
-         *   F1  F2  F3  F4  F5  |  LFT  DWN    UP   RGT   DEL
-         *  BT0 BT1 BT2 BT3 BT4  | HOME PGDN  PGUP   END   TAB
-         *            SYS  --  SPC | BSPC  --   --
+         * The QMK rows were written as 6 keys on the left of a wider Cantor.
+         * The extra key is the unused outer column, so it is dropped here.
+         * What remains, left to right:
          *
-         * `BT0`..`BT4` select Bluetooth profile 0-4. These are safe: they
-         * only switch which host profile is active, they never erase a bond.
-         *
-         * The left outer thumb becomes SYSTEM — hold it together with LOWER
-         * to reach the destructive/recovery keys.
-         *
-         * BACKSPACE FALLBACK: the inner right thumb (normally Enter) gives
-         * Backspace on this layer. The dedicated Backspace key is the OUTER
-         * right thumb on the base layer, but that switch is electrically
-         * dead on this build — its C4 branch (diode / joints) is open, which
-         * was confirmed by a test firmware that ruled out a C1 miswire.
-         * Once that joint is repaired the base-layer key works again and
-         * this fallback simply becomes a convenience.
+         *   --  --  BRI-  BRI+  --  |  -- -- -- -- --
+         *   --  PREV PLAY NEXT  --  |  -- -- -- -- --
+         *   --  --  VOL-  VOL+ MUTE |  -- -- -- -- --
+         *          ___   --   --    |  -- -- --
          * ------------------------------------------------------------------ */
-        lower_layer {
-            display-name = "Lower";
+        media_layer {
+            display-name = "Media";
             bindings = <
-                &kp N1        &kp N2        &kp N3        &kp N4        &kp N5        &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
-                &kp F1        &kp F2        &kp F3        &kp F4        &kp F5        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp DEL
-                &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &kp TAB
-                                            &mo 2         &trans        &trans        &kp BSPC   &trans     &trans
+                &none  &none    &kp C_BRI_DN &kp C_BRI_UP &none           &none  &none  &none  &none  &none
+                &none  &kp C_PREV &kp C_PP   &kp C_NEXT   &none           &none  &none  &none  &none  &none
+                &none  &none    &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE      &none  &none  &none  &none  &none
+                                &trans       &none        &none           &none  &none  &none
             >;
         };
 
         /* ------------------------------------------------------------------
-         * SYSTEM — recovery. Reached with LOWER + left outer thumb.
+         * 2  NUMBERS / SYMBOLS. Held by the middle left thumb (BSPC).
          *
-         *  BTCLR BTCLRA  --   --   --  |  --   --    --    --    --
-         *  OUTTOG OUTUSB OUTBLE -- --  |  --   F6    F7    F8    F9
-         *  BOOT-L RESET-L  --  --  --  |  --   F10   F11  RESET-R BOOT-R
-         *              --   --   --    |  --   --    --
-         *
-         * BTCLR    clears the bond for the CURRENTLY SELECTED profile.
-         * BTCLRA   clears the bonds for ALL profiles.
-         * Both are destructive and deliberately need three keys held at
-         * once (LOWER + left outer thumb + the key), so they cannot be hit
-         * by accident while typing.
-         *
-         * BOOT-L / RESET-L are physically on the LEFT half and act on the
-         * LEFT controller. BOOT-R / RESET-R are on the RIGHT half and act
-         * on the RIGHT controller. That means you can re-enter the UF2
-         * bootloader on either half from the keyboard itself, without
-         * shorting RST to GND again.
+         *   1    2    3    4    5   |  6    7    8    9    0
+         *   GUI  ALT  CTL  SFT  `   |  ;    RSFT RCTL RALT RGUI
+         *   \    [    {    -    =   |  +    _    }    ]    |
+         *        BSPC  ___  RET     |  SPC  ,    .
          * ------------------------------------------------------------------ */
-        system_layer {
+        num_layer {
+            display-name = "Numbers";
+            bindings = <
+                &kp N1    &kp N2    &kp N3    &kp N4    &kp N5      &kp N6    &kp N7    &kp N8    &kp N9    &kp N0
+                &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &kp GRAVE   &kp SEMI  &kp RSHFT &kp RCTRL &kp RALT  &kp RGUI
+                &kp BSLH  &kp LBKT  &kp LBRC  &kp MINUS &kp EQUAL   &kp PLUS  &kp UNDER &kp RBRC  &kp RBKT  &kp PIPE
+                                    &kp BSPC  &trans    &kp RET     &kp SPACE &kp COMMA &kp DOT
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * 3  FUNCTION / SYSTEM / BLUETOOTH. Held by the inner left thumb (TAB).
+         *
+         *   F1   F2   F3   F4   F5  |  F6   F7   F8   F9   F10
+         *   GUI  ALT  CTL  SFT  F11 |  F12  RSFT RCTL RALT RGUI
+         *   BT0  BT1  BT2  BT3  BOOT|  INS  HOME PGDN PGUP END
+         *        .    CAPS  ___     |  BOOT BT4  BTCLR
+         *
+         * BT_SEL 0–3 and the left bootloader are on the left half, so that
+         * bootloader reboots the left controller. BT_SEL 4, the right
+         * bootloader, and BT_CLR are right-thumb keys, so the right
+         * bootloader reboots the right controller. BT_CLR only clears the
+         * profile that is selected right now, and it takes the layer hold
+         * plus the outer right thumb.
+         *
+         * Not carried over, because the 36 keys were already full:
+         *   calculator (C_AL_CALC), Cmd+1, Cmd+2, Print Screen.
+         *   TO(6) is removed, not replaced with another layer switch.
+         * ------------------------------------------------------------------ */
+        sys_layer {
             display-name = "System";
             bindings = <
-                &bt BT_CLR     &bt BT_CLR_ALL  &none          &none   &none    &none   &none      &none      &none        &none
-                &out OUT_TOG   &out OUT_USB    &out OUT_BLE   &none   &none    &none   &kp F6     &kp F7     &kp F8       &kp F9
-                &bootloader    &sys_reset      &none          &none   &none    &none   &kp F10    &kp F11    &sys_reset   &bootloader
-                                               &trans         &none   &none    &none   &none      &none
+                &kp F1    &kp F2    &kp F3    &kp F4       &kp F5         &kp F6   &kp F7    &kp F8     &kp F9     &kp F10
+                &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT    &kp F11        &kp F12  &kp RSHFT &kp RCTRL  &kp RALT   &kp RGUI
+                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bootloader  &kp INS &kp HOME &kp PG_DN &kp PG_UP &kp END
+                                    &kp DOT   &kp CAPS     &trans         &bootloader &bt BT_SEL 4 &bt BT_CLR
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * 4  SYMBOLS / NAVIGATION. Held by the middle right thumb (SPACE).
+         *
+         *   !  @  #  $  %   |  ^  &  *  (  )
+         *   GUI ALT CTL SFT ~ | :  LEFT UP DOWN RIGHT
+         *   -- -- -- -- --  |  -- --  <  >  ?
+         *      -- -- --     |  -- ___ --
+         * ------------------------------------------------------------------ */
+        sym_layer {
+            display-name = "Symbols";
+            bindings = <
+                &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT    &kp CARET &kp AMPS &kp STAR  &kp LPAR  &kp RPAR
+                &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &kp TILDE    &kp COLON &kp LEFT &kp UP    &kp DOWN  &kp RIGHT
+                &none     &none     &none     &none     &none        &none     &none    &kp LT    &kp GT    &kp QMARK
+                                    &none     &none     &none        &none     &trans   &none
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * 5  MOUSE. Held by the outer right thumb (DEL).
+         *
+         * QMK's three acceleration levels (MS_ACL0/1/2) have no per-key
+         * equivalent. ZMK accelerates inside &mmv (time-to-max-speed-ms and
+         * acceleration-exponent on that one behavior), so those three spots
+         * are &none rather than a fake key.
+         *
+         * QMK buttons 6, 7, and 8 are also &none. ZMK's mouse button behavior
+         * only defines MB1–MB5.
+         *
+         *   --   --   MB4  MB5  --  |  WHUP --   --   --   --
+         *   --   MB3  MB2  MB1  --  |  WHDN LEFT DOWN UP   RIGHT
+         *   --   --   --   --   --  |  --   WHL  WHR  --   --
+         *        ALT  CTL  SFT      |  --   --   ___
+         *
+         * Button order on the home row is the QMK order: middle, right, left.
+         * ------------------------------------------------------------------ */
+        mouse_layer {
+            display-name = "Mouse";
+            bindings = <
+                &none      &none      &mkp MB4   &mkp MB5   &none      &msc SCRL_UP   &none          &none           &none        &none
+                &none      &mkp MB3   &mkp MB2   &mkp MB1   &none      &msc SCRL_DOWN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_UP &mmv MOVE_RIGHT
+                &none      &none      &none      &none      &none      &none          &msc SCRL_LEFT &msc SCRL_RIGHT &none       &none
+                                    &kp LALT   &kp LCTRL  &kp LSHFT   &none          &none          &trans
             >;
         };
     };
