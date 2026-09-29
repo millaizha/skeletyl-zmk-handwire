@@ -46,13 +46,21 @@
          *   1   2   3   4   5   |   6    7     8     9     0
          *   F1  F2  F3  F4  F5  |  LFT  DWN    UP   RGT   DEL
          *  BT0 BT1 BT2 BT3 BT4  | HOME PGDN  PGUP   END   TAB
-         *            SYS  --  SPC | RET  --  BSPC
+         *            SYS  --  SPC | BSPC  --   --
          *
          * `BT0`..`BT4` select Bluetooth profile 0-4. These are safe: they
          * only switch which host profile is active, they never erase a bond.
          *
          * The left outer thumb becomes SYSTEM — hold it together with LOWER
          * to reach the destructive/recovery keys.
+         *
+         * BACKSPACE FALLBACK: the inner right thumb (normally Enter) gives
+         * Backspace on this layer. The dedicated Backspace key is the OUTER
+         * right thumb on the base layer, but that switch is electrically
+         * dead on this build — its C4 branch (diode / joints) is open, which
+         * was confirmed by a test firmware that ruled out a C1 miswire.
+         * Once that joint is repaired the base-layer key works again and
+         * this fallback simply becomes a convenience.
          * ------------------------------------------------------------------ */
         lower_layer {
             display-name = "Lower";
@@ -60,7 +68,7 @@
                 &kp N1        &kp N2        &kp N3        &kp N4        &kp N5        &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
                 &kp F1        &kp F2        &kp F3        &kp F4        &kp F5        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp DEL
                 &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &kp HOME   &kp PG_DN  &kp PG_UP  &kp END    &kp TAB
-                                            &mo 2         &trans        &trans        &trans     &trans     &trans
+                                            &mo 2         &trans        &trans        &kp BSPC   &trans     &trans
             >;
         };
 
