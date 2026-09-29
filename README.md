@@ -73,6 +73,14 @@ modifier, so holding A and tapping J is Cmd+J, while rolling A into S types `as`
 The tapping term is 350 ms. That window matters when you want a modifier and the
 next key is on the **same** hand. Opposite-hand chords do not wait it out.
 
+Combos, base layer only. Both keys within 50 ms:
+
+| Keys | Result |
+|---|---|
+| G and M | Caps word. The next word is uppercase, then it stops. Space, punctuation, or pressing it again ends it. |
+| B and J | Repeat the last key. Hold both to keep it going. |
+| `,` and `.` | `:` |
+
 ---
 
 ## Layer 1 · Media
@@ -80,13 +88,25 @@ next key is on the **same** hand. Opposite-hand chords do not wait it out.
 Hold the outer left thumb (Esc).
 
 ```
-·    ·    Bri- Bri+ ·          ·    ·    ·    ·    ·
-·    ◀◀   ▶❚   ▶▶   ·          ·    ·    ·    ·    ·
-·    ·    Vol- Vol+ Mute       ·    ·    ·    ·    ·
-          ·    ·    ·        ·    ·    ·
+·    ·    Bri- Bri+ ·          ·    ·     ·     ·   ·
+·    ◀◀   ▶❚   ▶▶   ·          ·    CtlSs CtlRec Ss Rec
+·    ·    Vol- Vol+ Mute       ·    ·     ·     ·   ·
+          ·    ·    ·        ·    ·     ·
 ```
 
 `◀◀` previous, `▶❚` play/pause, `▶▶` next. `Bri` is display brightness.
+The capture keys sit on N, E, I, and O, the same row as the transport keys.
+The Control versions are on the index and middle, since those are the ones used most.
+
+| Key | Chord | What it does |
+|---|---|---|
+| CtlSs, on N | Cmd+Ctrl+Shift+4 | Selection copied to the clipboard |
+| CtlRec, on E | Cmd+Ctrl+Shift+5 | Recording toolbar, result copied to the clipboard |
+| Ss, on I | Cmd+Shift+4 | Selection saved as a file |
+| Rec, on O | Cmd+Shift+5 | Recording toolbar, result saved as a file |
+
+Cmd+Shift+5 opens the macOS toolbar. Choose record-screen or record-selection there, then start it. Cmd+Ctrl+Esc stops a recording.
+
 The held thumb is transparent, so a tap still sends Esc.
 
 ---
@@ -115,11 +135,12 @@ Hold the inner left thumb (Tab).
 F1   F2   F3   F4   F5         F6   F7   F8   F9   F10
 Cmd  Opt  Ctl  Sft  F11        F12  Sft  Ctl  Opt  Cmd
 Bt0  Bt1  Bt2  Bt3  Boot       Ins  Home PgDn PgUp End
-          .    Caps ·        Boot Bt4  Clr
+          .    Word ·        Boot Bt4  Clr
 ```
 
 | Key | What it does |
 |---|---|
+| Word | Caps word, same as G+M on the base layer. Not Caps Lock. |
 | Bt0–Bt4 | Select Bluetooth profile 0–4. Safe. Switches host, does not erase anything. |
 | Clr | Forget the bond for the profile that is selected right now. Outer right thumb, so it takes Tab plus that thumb. |
 | Boot, left bottom row | Reboot the **left** controller into the UF2 bootloader. |
@@ -136,25 +157,33 @@ Hold the middle right thumb (Space).
 ```
 !    @    #    $    %          ^    &    *    (    )
 Cmd  Opt  Ctl  Sft  ~          :    ←    ↑    ↓    →
-·    ·    ·    ·    ·          ·    ·    <    >    ?
+·    ·    ·    ·    ·          Rpt  ·    <    >    ?
           ·    ·    ·        ·    ·    ·
 ```
+
+`Rpt` is on K. It repeats the last key, so an arrow can be tapped and then
+repeated while Space stays held. B+J on the base layer does the same thing.
 
 ---
 
 ## Layer 5 · Mouse
 
-Hold the outer right thumb (Delete).
+Hold the inner right thumb (Delete).
 
 ```
-·    ·    B4   B5   ·          Wh↑ ·    ·    ·    ·
+·    ·    B4   B5   ·          Wh↑ B1   B2   Lock ·
 ·    B3   B2   B1   ·          Wh↓  ←    ↓    ↑    →
-·    ·    ·    ·    ·          ·    Wh←  Wh→  ·    ·
+·    ·    ·    ·    ·          B3   Wh←  Wh→  ·    ·
           Opt  Ctl  Sft      ·    ·    ·
 ```
 
 B1 is left click, B2 right click, B3 middle click. B4 and B5 are the side buttons.
 On the home row the buttons sit middle, right, left, which is the original order.
+L and U, the keys above left and down, are another left click and right click.
+K, beneath them, is another middle click.
+
+`Lock` is on Y. Tap it while Delete is held and the mouse layer stays on after
+you let go. Tap Y again to leave.
 
 Three QMK mouse-speed keys and mouse buttons 6, 7, and 8 are empty. ZMK accelerates
 inside the move behavior itself, and it only defines buttons 1–5.
@@ -210,14 +239,15 @@ Each half scans its own columns 0–4. The right firmware adds `col-offset = <5>
 so the two local matrices become one 4×10 keyboard.
 
 The right half's **letter** columns are mirrored: C0 is the pinky side, C4 is
-toward the center gap. Its **thumb** cluster is not mirrored the same way. Both
-halves put the three thumbs on local C2, C3, C4.
+toward the center gap. The right **thumb** cluster follows that same direction.
+Both halves put the three thumbs on local C2, C3, C4. On the right, C4 is the
+inner thumb, C3 the middle, and C2 the outer.
 
 ```
 RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)   RC(0,9) RC(0,8) RC(0,7) RC(0,6) RC(0,5)
 RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(1,9) RC(1,8) RC(1,7) RC(1,6) RC(1,5)
 RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)   RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,5)
-                        RC(3,2) RC(3,3) RC(3,4)   RC(3,7) RC(3,8) RC(3,9)
+                        RC(3,2) RC(3,3) RC(3,4)   RC(3,9) RC(3,8) RC(3,7)
 ```
 
 `RC(3,0)`, `RC(3,1)`, `RC(3,5)`, and `RC(3,6)` have no switch. 15 letters and 3

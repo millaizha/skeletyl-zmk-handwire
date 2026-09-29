@@ -147,6 +147,42 @@
         };
     };
 
+    /*
+     * Combos fire only on the base layer. Both keys have to go down within
+     * 50 ms, so a normal roll does not count.
+     *
+     *   G + M   caps word. These are the two home keys across the gap.
+     *           "gm" / "mg" almost never overlap in real typing.
+     *   B + J   key repeat. Same idea on the top row. slow-release keeps
+     *           the repeated key held until both fingers come up.
+     *   , + .   colon, so ":" does not need the symbols layer.
+     */
+    combos {
+        compatible = "zmk,combos";
+
+        combo_caps_word {
+            timeout-ms = <50>;
+            key-positions = <14 15>;
+            bindings = <&caps_word>;
+            layers = <0>;
+        };
+
+        combo_repeat {
+            timeout-ms = <50>;
+            key-positions = <4 5>;
+            bindings = <&key_repeat>;
+            layers = <0>;
+            slow-release;
+        };
+
+        combo_colon {
+            timeout-ms = <50>;
+            key-positions = <27 28>;
+            bindings = <&kp COLON>;
+            layers = <0>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
@@ -179,18 +215,29 @@
          * The extra key is the unused outer column, so it is dropped here.
          * What remains, left to right:
          *
-         *   --  --  BRI-  BRI+  --  |  -- -- -- -- --
-         *   --  PREV PLAY NEXT  --  |  -- -- -- -- --
-         *   --  --  VOL-  VOL+ MUTE |  -- -- -- -- --
-         *          ___   --   --    |  -- -- --
+         *   --  --  BRI-  BRI+  --  |  --   --     --     -- --
+         *   --  PREV PLAY NEXT  --  |  --   CTLSS  CTLREC SS REC
+         *   --  --  VOL-  VOL+ MUTE |  --   --     --     -- --
+         *          ___   --   --    |  --   --     --
+         *
+         * On N E I O, the same row as previous / play / next. The Control
+         * versions come first, because that is the pair used most.
+         *
+         *   CTLSS   N  Cmd+Ctrl+Shift+4  selection, copied to the clipboard
+         *   CTLREC  E  Cmd+Ctrl+Shift+5  recording toolbar, clipboard
+         *   SS      I  Cmd+Shift+4       selection, saved as a file
+         *   REC     O  Cmd+Shift+5       recording toolbar, saved as a file
+         *
+         * Cmd+Shift+5 opens the macOS toolbar; pick record-screen or
+         * record-selection there. Cmd+Ctrl+Esc stops a recording.
          * ------------------------------------------------------------------ */
         media_layer {
             display-name = "Media";
             bindings = <
-                &none  &none    &kp C_BRI_DN &kp C_BRI_UP &none           &none  &none  &none  &none  &none
-                &none  &kp C_PREV &kp C_PP   &kp C_NEXT   &none           &none  &none  &none  &none  &none
-                &none  &none    &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE      &none  &none  &none  &none  &none
-                                &trans       &none        &none           &none  &none  &none
+                &none  &none    &kp C_BRI_DN &kp C_BRI_UP &none           &none  &none            &none                  &none  &none
+                &none  &kp C_PREV &kp C_PP   &kp C_NEXT   &none           &none  &kp LG(LC(LS(N4))) &kp LG(LC(LS(N5))) &kp LG(LS(N4)) &kp LG(LS(N5))
+                &none  &none    &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE      &none  &none            &none                  &none  &none
+                                &trans       &none        &none           &none  &none            &none
             >;
         };
 
@@ -218,7 +265,10 @@
          *   F1   F2   F3   F4   F5  |  F6   F7   F8   F9   F10
          *   GUI  ALT  CTL  SFT  F11 |  F12  RSFT RCTL RALT RGUI
          *   BT0  BT1  BT2  BT3  BOOT|  INS  HOME PGDN PGUP END
-         *        .    CAPS  ___     |  BOOT BT4  BTCLR
+         *        .    WORD  ___     |  BOOT BT4  BTCLR
+         *
+         * WORD is caps word, not Caps Lock. The next word is shifted, then
+         * it turns itself off. G+M on the base layer does the same thing.
          *
          * BT_SEL 0–3 and the left bootloader are on the left half, so that
          * bootloader reboots the left controller. BT_SEL 4, the right
@@ -237,7 +287,7 @@
                 &kp F1    &kp F2    &kp F3    &kp F4       &kp F5         &kp F6   &kp F7    &kp F8     &kp F9     &kp F10
                 &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT    &kp F11        &kp F12  &kp RSHFT &kp RCTRL  &kp RALT   &kp RGUI
                 &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bootloader  &kp INS &kp HOME &kp PG_DN &kp PG_UP &kp END
-                                    &kp DOT   &kp CAPS     &trans         &bootloader &bt BT_SEL 4 &bt BT_CLR
+                                    &kp DOT   &caps_word   &trans         &bootloader &bt BT_SEL 4 &bt BT_CLR
             >;
         };
 
@@ -246,15 +296,18 @@
          *
          *   !  @  #  $  %   |  ^  &  *  (  )
          *   GUI ALT CTL SFT ~ | :  LEFT UP DOWN RIGHT
-         *   -- -- -- -- --  |  -- --  <  >  ?
+         *   -- -- -- -- --  |  RPT --  <  >  ?
          *      -- -- --     |  -- ___ --
+         *
+         * RPT is key repeat, on K, so an arrow can be tapped and then repeated
+         * without leaving this layer. B+J on the base layer repeats too.
          * ------------------------------------------------------------------ */
         sym_layer {
             display-name = "Symbols";
             bindings = <
                 &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT    &kp CARET &kp AMPS &kp STAR  &kp LPAR  &kp RPAR
                 &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &kp TILDE    &kp COLON &kp LEFT &kp UP    &kp DOWN  &kp RIGHT
-                &none     &none     &none     &none     &none        &none     &none    &kp LT    &kp GT    &kp QMARK
+                &none     &none     &none     &none     &none        &key_repeat &none &kp LT    &kp GT    &kp QMARK
                                     &none     &none     &none        &none     &trans   &none
             >;
         };
@@ -270,19 +323,25 @@
          * QMK buttons 6, 7, and 8 are also &none. ZMK's mouse button behavior
          * only defines MB1–MB5.
          *
-         *   --   --   MB4  MB5  --  |  WHUP --   --   --   --
+         *   --   --   MB4  MB5  --  |  WHUP MB1  MB2  LOCK --
          *   --   MB3  MB2  MB1  --  |  WHDN LEFT DOWN UP   RIGHT
-         *   --   --   --   --   --  |  --   WHL  WHR  --   --
+         *   --   --   --   --   --  |  MB3  WHL  WHR  --   --
          *        ALT  CTL  SFT      |  --   --   ___
          *
          * Button order on the home row is the QMK order: middle, right, left.
+         * L and U (the keys above left and down) are left click and right
+         * click, so a click sits on the same hand as the pointer. K, under
+         * them, is middle click.
+         *
+         * LOCK is &tog 5 on Y. Tap it while this layer is held and the layer
+         * stays up after Delete is released. Tap Y again to leave.
          * ------------------------------------------------------------------ */
         mouse_layer {
             display-name = "Mouse";
             bindings = <
-                &none      &none      &mkp MB4   &mkp MB5   &none      &msc SCRL_UP   &none          &none           &none        &none
+                &none      &none      &mkp MB4   &mkp MB5   &none      &msc SCRL_UP   &mkp MB1       &mkp MB2        &tog 5       &none
                 &none      &mkp MB3   &mkp MB2   &mkp MB1   &none      &msc SCRL_DOWN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_UP &mmv MOVE_RIGHT
-                &none      &none      &none      &none      &none      &none          &msc SCRL_LEFT &msc SCRL_RIGHT &none       &none
+                &none      &none      &none      &none      &none      &mkp MB3       &msc SCRL_LEFT &msc SCRL_RIGHT &none       &none
                                     &kp LALT   &kp LCTRL  &kp LSHFT   &none          &none          &trans
             >;
         };

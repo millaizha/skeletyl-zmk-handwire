@@ -78,19 +78,17 @@
      * order. That is what makes position 5 (keymap `J`) land on the key
      * nearest the center gap instead of out by the pinky.
      *
-     * THUMBS (row 3) — both halves use local columns C2, C3, C4, but the
-     * right thumb cluster is its own wire chain and runs the OPPOSITE way
-     * to the right main grid. Confirmed on hardware:
-     *   - the innermost right thumb reported C2
-     *   - the centre and outer right thumbs reported nothing at all while
-     *     C0/C1 were mapped, so they cannot be on C0/C1 — they are C3/C4
-     *   - all three LEFT thumbs behave as mapped, so the left is correct
+     * THUMBS (row 3) — both halves use local columns C2, C3, C4.
+     * The right thumb cluster follows the right letter columns: higher
+     * column numbers sit closer to the center gap.
      *
      *   left  thumbs = C2, C3, C4   -> global cols 2, 3, 4  (outer to inner)
-     *   right thumbs = C2, C3, C4   -> global cols 7, 8, 9  (inner to outer)
+     *   right thumbs = C4, C3, C2   -> global cols 9, 8, 7  (inner to outer)
      *
-     * Hence the thumb row is ASCENDING on the right while the main rows are
-     * descending. That asymmetry is intentional; do not "tidy" it.
+     * An earlier map treated the right thumbs as the opposite of the letter
+     * columns (C2 inner, C4 outer). On the finished board the outer and
+     * inner thumbs were swapped, so this row lists C4, C3, C2. The middle
+     * thumb stays on C3. Do not reverse it again.
      *
      * RC(3,0), RC(3,1), RC(3,5) and RC(3,6) are intentionally absent —
      * no switch is wired at those intersections.
@@ -106,7 +104,7 @@
             RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)   RC(0,9) RC(0,8) RC(0,7) RC(0,6) RC(0,5)
             RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(1,9) RC(1,8) RC(1,7) RC(1,6) RC(1,5)
             RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)   RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,5)
-                            RC(3,2) RC(3,3) RC(3,4)   RC(3,7) RC(3,8) RC(3,9)
+                            RC(3,2) RC(3,3) RC(3,4)   RC(3,9) RC(3,8) RC(3,7)
         >;
     };
 
