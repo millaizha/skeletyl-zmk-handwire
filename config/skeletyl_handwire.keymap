@@ -46,10 +46,9 @@
          *   quick-tap-ms
          *     Tap then quickly hold repeats the letter (shift-select, etc.).
          *
-         * tapping-term-ms is 200, inside the requested 180–220 window.
-         * ZMK's own example of this same setup uses 280. Raise this toward
-         * 280 if a deliberate same-hand modifier is hard to catch; opposite-
-         * hand chords do not depend on the term because of the trigger list.
+         * tapping-term-ms is 350. Opposite-hand chords do not depend on it,
+         * because of the trigger list. It is the window for a deliberate
+         * same-hand modifier: hold at least this long, then tap.
          *
          * Left hand uses the left modifiers. Right hand uses the right
          * modifiers (RSHFT/RCTRL/RALT/RGUI). macOS treats both sides as
@@ -59,7 +58,7 @@
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             quick-tap-ms = <175>;
             require-prior-idle-ms = <150>;
             hold-trigger-on-release;
@@ -76,7 +75,7 @@
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             quick-tap-ms = <175>;
             require-prior-idle-ms = <150>;
             hold-trigger-on-release;
@@ -107,7 +106,7 @@
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             quick-tap-ms = <200>;
             retro-tap;
             bindings = <&mo>, <&kp>;
@@ -116,33 +115,34 @@
         /* Double tap = Cmd+C / Cmd+X / Cmd+V / Cmd+Z. Single tap = the letter.
          * This is ZMK's tap-dance, the direct stand-in for QMK
          * ACTION_TAP_DANCE_DOUBLE. The second tap has to land within
-         * tapping-term-ms; slower than that, you get the letter twice.
+         * 350 ms; slower than that, you get the letter twice. A single tap
+         * is also delayed by that long, so Q, Z, X, and V feel late.
          * macOS Command, not Control. */
         td_q: tap_dance_q {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             bindings = <&kp Q>, <&kp LG(C)>;
         };
 
         td_x: tap_dance_x {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             bindings = <&kp X>, <&kp LG(X)>;
         };
 
         td_v: tap_dance_v {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             bindings = <&kp V>, <&kp LG(V)>;
         };
 
         td_z: tap_dance_z {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             bindings = <&kp Z>, <&kp LG(Z)>;
         };
     };
