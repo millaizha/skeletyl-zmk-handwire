@@ -83,12 +83,14 @@
      * column numbers sit closer to the center gap.
      *
      *   left  thumbs = C2, C3, C4   -> global cols 2, 3, 4  (outer to inner)
-     *   right thumbs = C4, C3, C2   -> global cols 9, 8, 7  (inner to outer)
+     *   right thumbs = C4, C3, C2   -> global cols 9, 8, 7
      *
-     * An earlier map treated the right thumbs as the opposite of the letter
-     * columns (C2 inner, C4 outer). On the finished board the outer and
-     * inner thumbs were swapped, so this row lists C4, C3, C2. The middle
-     * thumb stays on C3. Do not reverse it again.
+     * Those right columns line up with the letters:
+     *   C4 / col 9  same column as J   Enter
+     *   C3 / col 8  same column as L   Space
+     *   C2 / col 7  same column as E   Delete, the inner thumb
+     *
+     * Do not swap C4 and C2. Delete stays on E's column.
      *
      * RC(3,0), RC(3,1), RC(3,5) and RC(3,6) are intentionally absent —
      * no switch is wired at those intersections.
