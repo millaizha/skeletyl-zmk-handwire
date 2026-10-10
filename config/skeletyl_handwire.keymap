@@ -1,7 +1,7 @@
 /*
- * Skeletyl 36 — Cantor Remix, layers 0–5 only.
+ * Skeletyl 36 — Cantor Remix, layers 0–6.
  *
- * Game layers 6–9 and every game tap-dance are intentionally absent.
+ * Layer 6 is Minecraft (sticky). Layers 7–9 and game tap-dances stay absent.
  * The matrix, GPIOs, diode direction, split roles, and thumb transform
  * are not defined here. This file is bindings only.
  *
@@ -176,6 +176,29 @@
             retro-tap;
             bindings = <&kp>, <&td_z>;
         };
+
+        /*
+         * Outer right thumb on Colemak: tap → Minecraft (layer 6), hold → Mouse.
+         * Same timing as the other thumb layer-taps; tap side is &to, not &kp.
+         */
+        mc_tog: minecraft_toggle {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <350>;
+            quick-tap-ms = <200>;
+            retro-tap;
+            bindings = <&mo>, <&to>;
+        };
+    };
+
+    macros {
+        /* Minecraft chat: Enter opens chat, then sticky Colemak for typing. */
+        mc_chat: mc_chat_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp RET>, <&to 0>;
+        };
     };
 
     /*
@@ -247,7 +270,7 @@
                 &td_q       &kp W        &kp F        &kp P         &kp B          &kp J        &kp L         &kp U        &kp Y        &kp SQT
                 &hml LCTRL A &hml LALT R  &hml LGUI S &hml LSHFT T  &kp G          &kp M        &hmr RSHFT N  &hmr RGUI E &hmr RALT I  &hmr RCTRL O
                 &zcmd LGUI 0 &td_x       &kp C        &kp D         &td_v          &kp K        &kp H         &kp COMMA    &kp DOT      &cmdh RGUI FSLH
-                                         &thumb 1 ESC &thumb 2 BSPC &thumb 3 TAB   &kp RET      &thumb 4 SPACE &thumb 5 DEL
+                                         &thumb 1 ESC &thumb 2 BSPC &thumb 3 TAB   &kp RET      &thumb 4 SPACE &mc_tog 5 6
             >;
         };
 
@@ -408,6 +431,28 @@
                 &none      &mkp MB3   &mkp MB2   &mkp MB1   &none      &msc SCRL_DOWN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_UP &mmv MOVE_RIGHT
                 &none      &none      &none      &none      &none      &mkp MB3       &msc SCRL_LEFT &msc SCRL_RIGHT &none       &none
                                     &kp LALT   &kp LCTRL  &kp LSHFT   &none          &none          &trans
+            >;
+        };
+
+        /* ------------------------------------------------------------------
+         * 6  MINECRAFT — sticky. Tap outer right thumb on Colemak (&mc_tog).
+         *
+         *   TAB  Q  W  E  R  |  F1  F2  F3  F4  F5
+         *   SFT  A  S  D  F  |  F6  F7  F8  F9  F10
+         *   CTL  Z  X  C  V  |  F11 F12 ALT GUI B
+         *       ESC SPC M    |  --  CHAT --
+         *
+         * Middle-left thumb is Space (jump). Thumb right of Space is M.
+         * Middle-right thumb is chat: Enter, then TO(0) Colemak for typing.
+         * Outer right thumb on Colemak returns here (TO(6)).
+         * ------------------------------------------------------------------ */
+        minecraft_layer {
+            display-name = "Minecraft";
+            bindings = <
+                &kp TAB   &kp Q     &kp W     &kp E     &kp R       &kp F1    &kp F2    &kp F3    &kp F4    &kp F5
+                &kp LSHFT &kp A     &kp S     &kp D     &kp F       &kp F6    &kp F7    &kp F8    &kp F9    &kp F10
+                &kp LCTRL &kp Z     &kp X     &kp C     &kp V       &kp F11   &kp F12   &kp LALT  &kp LGUI  &kp B
+                                    &kp ESC   &kp SPACE &kp M       &none     &mc_chat  &none
             >;
         };
     };
