@@ -105,14 +105,15 @@ Combos, base layer only. Both keys within 50 ms:
 Hold the outer left thumb (Esc).
 
 ```
-·    ·    Bri- Bri+ ·          CtlS3 Ss3  Emj  Fmt Lock
+MC   ·    Bri- Bri+ ·          CtlS3 Ss3  Emj  Fmt Lock
 ·    ◀◀   ▶❚   ▶▶   ·          Stop  CtlSs CtlRec Ss  Rec
 ·    ·    Vol- Vol+ Mute       Pal   Term  Find Del  ·
           ·    ·    ·        ·     ·     ·
 ```
 
-`◀◀` previous, `▶❚` play/pause, `▶▶` next. `Bri` is display brightness.
-The Control versions sit on the index side, since those are the ones used most.
+`MC` (top left) is sticky layer 6 · Minecraft. `◀◀` previous, `▶❚` play/pause,
+`▶▶` next. `Bri` is display brightness. The Control versions sit on the index
+side, since those are the ones used most.
 
 
 | Key          | Chord            | What it does                                      |
@@ -246,6 +247,45 @@ inside the move behavior itself, and it only defines buttons 1–5.
 
 
 
+## Layer 6 · Minecraft
+
+Sticky game layer. Not a hold layer. Delete on Colemak is unchanged.
+
+| Direction | What to press |
+| --------- | ------------- |
+| **In** | Hold Esc (Media), tap **top left** (`MC`) |
+| **Out** (no chat) | On Minecraft, tap the **leftmost right thumb** (Enter's column) → Colemak |
+| **Chat** | On Minecraft, tap **T** → opens chat and goes to layer 7 (MC Chat) |
+
+```
+Tab  Q    W    E    T*         F1   F2   F3   F4   F5
+Sft  A    S    D    F          F6   F7   F8   F9   F10
+Ctl  Z    X    C    V          F11  F12  Opt  R    B
+          Esc  Spc  M       Out   ·    ·
+```
+
+`T*` opens chat (sends Enter, then layer 7). It does not type the letter T.
+Left column is Tab / Shift / Ctrl. WASD sits on the home block. Middle-left thumb
+is Space (jump). Thumb right of Space is M. `Out` returns to Colemak without chat.
+
+No home-row mods, tap-dances, or combos on this layer.
+
+---
+
+
+
+## Layer 7 · MC Chat
+
+Colemak-DH for typing in Minecraft chat. Same layout as layer 0 (home-row mods,
+thumb layers, double taps), except **Enter** sends the message and returns to
+Minecraft (layer 6). Everyday Colemak Enter on layer 0 is still plain Enter.
+
+Flow: Media → MC → tap T → type on MC Chat → Enter → back in Minecraft.
+
+---
+
+
+
 ## Timing
 
 
@@ -365,7 +405,7 @@ docker run --rm -v zmkws:/ws -v "$PWD":/hostrepo:ro \
 | Path                                 | What it is                                                  |
 | ------------------------------------ | ----------------------------------------------------------- |
 | `config/west.yml`                    | West manifest. `west init -l config` reads this.            |
-| `config/skeletyl_handwire.keymap`    | All six layers. Used by both halves.                        |
+| `config/skeletyl_handwire.keymap`    | All eight layers (0–7). Used by both halves.                |
 | `config/skeletyl_handwire.conf`      | Kconfig for both halves.                                    |
 | `config/skeletyl_handwire_left.conf` | Central-only options, merged for the left half.             |
 | `boards/shields/skeletyl_handwire/`  | Matrix, transform, physical layout, split roles.            |
