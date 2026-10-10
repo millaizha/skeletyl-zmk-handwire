@@ -11,6 +11,8 @@ zmk/
 *.uf2
 *.bin
 *.hex
+# Keep flashed firmware in-repo so it is local after git pull
+!firmware/*.uf2
 
 # macOS
 .DS_Store

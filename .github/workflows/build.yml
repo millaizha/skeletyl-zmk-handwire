@@ -49,5 +49,7 @@ jobs:
         with:
           commit_message: "chore(firmware): update UF2s from CI [skip ci]"
           file_pattern: firmware/*.uf2
+          # *.uf2 is gitignored except firmware/; force-add so the commit lands
+          add_options: "-f"
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
