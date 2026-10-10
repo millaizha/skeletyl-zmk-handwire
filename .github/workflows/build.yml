@@ -8,3 +8,46 @@ jobs:
     # config/west.yml tracks `main` because the `nice_nano//zmk` board target
     # does not exist in the v0.3 release.
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+
+  # After a successful main build, commit UF2s into firmware/ so they are
+  # available in the repo without downloading the Actions artifact by hand.
+  publish:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/artifacts
+
+      - name: Copy UF2s into firmware/
+        run: |
+          set -euo pipefail
+          mkdir -p firmware
+          echo "Artifact tree:"
+          find /tmp/artifacts -type f | sort
+          for name in skeletyl_handwire_left skeletyl_handwire_right settings_reset; do
+            src=$(find /tmp/artifacts -type f \( -name "${name}.uf2" -o -name "${name}-*.uf2" \) | head -1)
+            if [ -z "${src}" ]; then
+              echo "missing ${name} uf2" >&2
+              exit 1
+            fi
+            cp "${src}" "firmware/${name}.uf2"
+            ls -la "firmware/${name}.uf2"
+          done
+
+      - name: Commit firmware/
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(firmware): update UF2s from CI [skip ci]"
+          file_pattern: firmware/*.uf2
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
