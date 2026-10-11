@@ -254,19 +254,18 @@ Sticky game layer. Not a hold layer. Delete on Colemak is unchanged.
 | Direction | What to press |
 | --------- | ------------- |
 | **In** | Hold Esc (Media), tap **top left** (`MC`) |
-| **Out** (no chat) | On Minecraft, tap the **leftmost right thumb** (Enter's column) → Colemak |
-| **Chat** | On Minecraft, tap **T** → opens chat and goes to layer 7 (MC Chat) |
+| **Chat** | On Minecraft, tap thumb **T** (middle right) → sends T (opens chat in-game) and goes to layer 7 |
 
 ```
-Tab  Q    W    E    T*         F1   F2   F3   F4   F5
+Tab  Q    W    E    R          F1   F2   F3   F4   F5
 Sft  A    S    D    F          F6   F7   F8   F9   F10
 Ctl  Z    X    C    V          F11  F12  Opt  R    B
-          Esc  Spc  M       Out   ·    ·
+          Esc  Spc  M        .    T    ·
 ```
 
-`T*` opens chat (sends Enter, then layer 7). It does not type the letter T.
-Left column is Tab / Shift / Ctrl. WASD sits on the home block. Middle-left thumb
-is Space (jump). Thumb right of Space is M. `Out` returns to Colemak without chat.
+Thumb **T** still sends the T keycode (Minecraft's open-chat bind), then switches
+to layer 7 for typing. Left column is Tab / Shift / Ctrl. WASD sits on the home
+block. Middle-left thumb is Space (jump). Thumb right of Space is M.
 
 No home-row mods, tap-dances, or combos on this layer.
 
@@ -280,7 +279,7 @@ Colemak-DH for typing in Minecraft chat. Same layout as layer 0 (home-row mods,
 thumb layers, double taps), except **Enter** sends the message and returns to
 Minecraft (layer 6). Everyday Colemak Enter on layer 0 is still plain Enter.
 
-Flow: Media → MC → tap T → type on MC Chat → Enter → back in Minecraft.
+Flow: Media → MC → thumb T → type on MC Chat → Enter → back in Minecraft.
 
 ---
 

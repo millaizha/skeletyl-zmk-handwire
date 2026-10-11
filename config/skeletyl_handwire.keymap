@@ -180,11 +180,11 @@
     };
 
     macros {
-        /* Minecraft T: open chat, then sticky Colemak chat layer (7). */
+        /* Minecraft thumb T: send T (opens chat in-game), then layer 7. */
         mc_chat: mc_chat_macro {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp RET>, <&to 7>;
+            bindings = <&kp T>, <&to 7>;
         };
 
         /* Chat-layer Enter: send the message, return to Minecraft (6). */
@@ -433,22 +433,22 @@
         /* ------------------------------------------------------------------
          * 6  MINECRAFT — sticky. Enter from Media top-left (&to 6).
          *
-         *   TAB  Q  W  E  T* |  F1  F2  F3  F4  F5
+         *   TAB  Q  W  E  R  |  F1  F2  F3  F4  F5
          *   SFT  A  S  D  F  |  F6  F7  F8  F9  F10
          *   CTL  Z  X  C  V  |  F11 F12 ALT  R  B
-         *       ESC SPC M    |  TO(0) --  --
+         *       ESC SPC M    |  .   T*  --
          *
-         * T* is chat: Enter opens the in-game box, then TO(7) Colemak chat.
-         * Chat-layer Enter sends and returns here. TO(0) leaves without chat.
+         * Thumb T sends T (Minecraft opens chat) then TO(7) Colemak chat.
+         * Chat-layer Enter sends and returns here. Dot is plain "." .
          * Middle-left thumb is Space (jump). Thumb right of Space is M.
          * ------------------------------------------------------------------ */
         minecraft_layer {
             display-name = "Minecraft";
             bindings = <
-                &kp TAB   &kp Q     &kp W     &kp E     &mc_chat    &kp F1    &kp F2    &kp F3    &kp F4    &kp F5
+                &kp TAB   &kp Q     &kp W     &kp E     &kp R       &kp F1    &kp F2    &kp F3    &kp F4    &kp F5
                 &kp LSHFT &kp A     &kp S     &kp D     &kp F       &kp F6    &kp F7    &kp F8    &kp F9    &kp F10
                 &kp LCTRL &kp Z     &kp X     &kp C     &kp V       &kp F11   &kp F12   &kp LALT  &kp R     &kp B
-                                    &kp ESC   &kp SPACE &kp M       &to 0     &none     &none
+                                    &kp ESC   &kp SPACE &kp M       &kp DOT   &mc_chat  &none
             >;
         };
 
