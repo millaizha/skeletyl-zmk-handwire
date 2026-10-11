@@ -254,18 +254,20 @@ Sticky game layer. Not a hold layer. Delete on Colemak is unchanged.
 | Direction | What to press |
 | --------- | ------------- |
 | **In** | Hold Esc (Media), tap **top left** (`MC`) |
+| **Out** | On Minecraft, tap the thumb **right of T** → Colemak (layer 0) |
 | **Chat** | On Minecraft, tap thumb **T** (middle right) → sends T (opens chat in-game) and goes to layer 7 |
 
 ```
 Tab  Q    W    E    R          F1   F2   F3   F4   F5
 Sft  A    S    D    F          F6   F7   F8   F9   F10
 Ctl  Z    X    C    V          F11  F12  Opt  R    B
-          Esc  Spc  M        .    T    ·
+          Esc  Spc  M        .    T   Out
 ```
 
 Thumb **T** still sends the T keycode (Minecraft's open-chat bind), then switches
-to layer 7 for typing. Left column is Tab / Shift / Ctrl. WASD sits on the home
-block. Middle-left thumb is Space (jump). Thumb right of Space is M.
+to layer 7 for typing. **Out** beside it returns to Colemak. Left column is Tab /
+Shift / Ctrl. WASD sits on the home block. Middle-left thumb is Space (jump).
+Thumb right of Space is M.
 
 No home-row mods, tap-dances, or combos on this layer.
 
